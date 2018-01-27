@@ -104,11 +104,12 @@ public class ConfigWatch implements Closeable, ApplicationEventPublisherAware {
 					// reducing churn if there wasn't anything
 					if (response.getValue() != null && !response.getValue().isEmpty()) {
 						Long newIndex = response.getConsulIndex();
-
+						System.out.println("newIndex:" + newIndex + ",currentIndex:" + currentIndex + ",this.consulIndexes:" + this.consulIndexes);
 						if (newIndex != null && !newIndex.equals(currentIndex)) {
 							// don't publish the same index again, don't publish the first time (-1) so index can be primed
 							if (!this.consulIndexes.containsValue(newIndex) && !currentIndex.equals(-1L)) {
 								RefreshEventData data = new RefreshEventData(context, currentIndex, newIndex);
+								System.out.println("RefreshEventData:" + data);
 								this.publisher.publishEvent(new RefreshEvent(this, data, data.toString()));
 							}
 							this.consulIndexes.put(context, newIndex);
